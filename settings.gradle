@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'samodelkin'
-//include ':samodelkin-java'
+include ':samodelkin-java'

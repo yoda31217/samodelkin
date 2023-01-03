@@ -1,0 +1,31 @@
+plugins {
+    id "java"
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+jar {
+    enabled = true
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compileOnly('org.assertj:assertj-core:3.16.1')
+
+    compileOnly('org.junit.jupiter:junit-jupiter-api:5.7.0')
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.7.0')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
+}
