@@ -34,10 +34,10 @@ tasks.named('test') {
         showSkipped true
         showFailed true
         showOnlySlow false
-        showStandardStreams true
-        showPassedStandardStreams true
-        showSkippedStandardStreams true
-        showFailedStandardStreams true
+        showStandardStreams false
+        showPassedStandardStreams false
+        showSkippedStandardStreams false
+        showFailedStandardStreams false
         // logLevel 'lifecycle'
     }
 }

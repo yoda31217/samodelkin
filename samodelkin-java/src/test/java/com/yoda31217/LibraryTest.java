@@ -11,7 +11,23 @@ class LibraryTest {
 
   @Test
   void someLibraryMethodReturnsTrue() {
+    System.out.println("asdasdasdsfg dgdsdf gdfd f g");
     Library classUnderTest = new Library();
     assertThat(classUnderTest.isPrime(3)).isTrue();
+  }
+
+  @Test
+  void someLibraryMethodReturnsTrue1() {
+    System.out.println("asdasdasdsfg dgdsdf gdfd f g1");
+    Library classUnderTest = new Library();
+    assertThat(classUnderTest.isPrime(3)).isTrue();
+  }
+
+  @Test
+  void someLibraryMethodReturnsTrue2() {
+    System.out.println("asdasdasdsfg dgdsdf gdfd f g2");
+    Library classUnderTest = new Library();
+    assertThat(classUnderTest.isPrime(3)).isTrue();
+//    throw new RuntimeException("Sadfsdf");
   }
 }
