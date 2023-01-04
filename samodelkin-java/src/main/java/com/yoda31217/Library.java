@@ -3,9 +3,11 @@
  */
 package com.yoda31217;
 
+import org.apache.commons.math3.primes.Primes;
+
 public class Library {
 
-  public boolean someLibraryMethod() {
-    return true;
+  public boolean isPrime(int number) {
+    return Primes.isPrime(number);
   }
 }

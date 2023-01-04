@@ -3,7 +3,7 @@
  */
 package com.yoda31217;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +12,6 @@ class LibraryTest {
   @Test
   void someLibraryMethodReturnsTrue() {
     Library classUnderTest = new Library();
-    assertTrue(classUnderTest.someLibraryMethod(), "someLibraryMethod should return 'true'");
+    assertThat(classUnderTest.isPrime(3)).isTrue();
   }
 }
