@@ -17,6 +17,10 @@ repositories {
     mavenCentral()
 }
 
+def artifactId = 'samodelkin-java'
+group = 'io.github.yoda31217'
+version = new Date().format('yyyyMMdd.HHmmss')
+
 publishing {
     repositories {
         maven {
@@ -32,9 +36,7 @@ publishing {
     }
     publications {
         samodelkinJava(MavenPublication) {
-            artifactId = 'samodelkin-java'
-            groupId = 'io.github.yoda31217'
-            version = buildVersion()
+            artifactId = artifactId
 
             from(components.java)
 
@@ -104,6 +106,6 @@ tasks.named('test') {
     }
 }
 
-def buildVersion() {
-    return new Date().format('yyyyMMdd.HHmmss')
+tasks.publish.doLast {
+    println "Published as ${group}:${artifactId}:${version} to https://s01.oss.sonatype.org"
 }
