@@ -66,4 +66,22 @@ class DoubleWithErrorTest {
     assertThat(doubleWithError.format(value -> format(ENGLISH, "%.2f", value)))
       .isEqualTo("0.25±0.05(20.00%)");
   }
+
+  @Test
+  void newDoubleWithError_on0Error_return0RelativeError() {
+    DoubleWithError doubleWithError = newDoubleWithError(1, 0);
+    assertThat(doubleWithError.getRelativeError()).isCloseTo(0, offset(0.0000001));
+  }
+
+  @Test
+  void newDoubleWithError_on0ValueAndError_return0RelativeError() {
+    DoubleWithError doubleWithError = newDoubleWithError(0, 0);
+    assertThat(doubleWithError.getRelativeError()).isCloseTo(0, offset(0.0000001));
+  }
+
+  @Test
+  void newDoubleWithError_on0ValueAnd1Error_returnInfiniteRelativeError() {
+    DoubleWithError doubleWithError = newDoubleWithError(0, 1);
+    assertThat(doubleWithError.getRelativeError()).isInfinite();
+  }
 }

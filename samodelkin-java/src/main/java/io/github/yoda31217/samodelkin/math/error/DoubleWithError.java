@@ -38,7 +38,9 @@ public class DoubleWithError {
   }
 
   public double getRelativeError() {
-    return error / abs(value);
+    return error == 0
+      ? 0
+      : error / abs(value);
   }
 
   public String format(Function<Double, String> valueFormatter) {
