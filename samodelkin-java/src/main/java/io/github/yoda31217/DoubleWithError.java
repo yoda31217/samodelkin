@@ -5,6 +5,10 @@ package io.github.yoda31217;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Math.abs;
+import static java.lang.String.format;
+import static java.util.Locale.ENGLISH;
+
+import java.util.function.Function;
 
 public class DoubleWithError {
 
@@ -36,5 +40,12 @@ public class DoubleWithError {
 
   public double getRelativeError() {
     return error / abs(value);
+  }
+
+  public String format(Function<Double, String> valueFormatter) {
+    return String.format(ENGLISH, "%s±%s(%.2f%%)",
+      valueFormatter.apply(value),
+      valueFormatter.apply(error),
+      100 * getRelativeError());
   }
 }
