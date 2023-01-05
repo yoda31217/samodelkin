@@ -1,7 +1,7 @@
 name: Publish samodelkin-java
 
 on:
-  [push]
+  [ push ]
 
 jobs:
   test-build-publish:
@@ -17,50 +17,9 @@ jobs:
           java-version: '17'
       - uses: gradle/gradle-build-action@v2
         with:
-          arguments: test
-      - name: Publish package
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publish
+          arguments: build publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-#name: Gradle Package
-#
-#on:
-#  release:
-#    types: [created]
-#
-#jobs:
-#  build:
-#
-#    runs-on: ubuntu-latest
-#    permissions:
-#      contents: read
-#      packages: write
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: Set up JDK 11
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: '11'
-#          distribution: 'temurin'
-#          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-#          settings-path: ${{ github.workspace }} # location for the settings.xml file
-#
-#      - name: Build with Gradle
-#        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-#        with:
-#          arguments: build
-#
-#      # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-#      # the publishing section of your build.gradle
-#      - name: Publish to GitHub Packages
-#        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-#        with:
-#          arguments: publish
-#        env:
-#          USERNAME: ${{ github.actor }}
-#          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONATYPE_USER: ${{ secrets.SONATYPE_USER }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SIGNING_GPG_SECRET_KEY: ${{ secrets.SIGNING_GPG_SECRET_KEY }}
+          SIGNING_GPG_PASSPHRASE: ${{ secrets.SIGNING_GPG_PASSPHRASE }}

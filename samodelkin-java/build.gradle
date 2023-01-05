@@ -2,13 +2,16 @@ plugins {
     id 'java-library'
     id 'com.adarshr.test-logger' version '3.2.0'
     id 'maven-publish'
+    id 'signing'
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-group 'com.yoda31217'
-version '1-SNAPSHOT'
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 repositories {
     mavenCentral()
@@ -17,14 +20,56 @@ repositories {
 publishing {
     repositories {
         maven {
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/yoda31217/samodelkin"
+            // https://issues.sonatype.org/browse/OSSRH-87602
+            // https://s01.oss.sonatype.org/#stagingRepositories
+            name = "MavenCentral"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
             credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
+                username = System.getenv('SONATYPE_USER')
+                password = System.getenv('SONATYPE_PASSWORD')
             }
         }
     }
+    publications {
+        samodelkinJava(MavenPublication) {
+            artifactId = 'samodelkin-java'
+            groupId = 'io.github.yoda31217'
+            version = buildVersion()
+
+            from(components.java)
+
+            pom {
+                name = 'Samodelkin Java Library'
+                description = 'Small Java utility library from yoda31217'
+                url = 'https://github.com/yoda31217/samodelkin'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'yoda31217'
+                        name = 'Jason Bourne'
+                        email = 'jbourne.nik@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'git@github.com:yoda31217/samodelkin.git'
+                    developerConnection = 'git@github.com:yoda31217/samodelkin.git'
+                    url = 'https://github.com/yoda31217/samodelkin'
+                }
+            }
+        }
+    }
+}
+
+signing {
+    def signingGpgSecretKey = System.getenv('SIGNING_GPG_SECRET_KEY')
+    def signingGpgPassphrase = System.getenv('SIGNING_GPG_PASSPHRASE')
+    useInMemoryPgpKeys(signingGpgSecretKey, signingGpgPassphrase)
+    sign publishing.publications.samodelkinJava
 }
 
 dependencies {
@@ -57,4 +102,8 @@ tasks.named('test') {
         showFailedStandardStreams false
         // logLevel 'lifecycle'
     }
+}
+
+def buildVersion() {
+    return new Date().format('yyyyMMdd.HHmmss')
 }
