@@ -1,7 +1,7 @@
-package io.github.yoda31217;
+package io.github.yoda31217.samodelkin.math.error;
 
-import static io.github.yoda31217.DoubleWithError.newDoubleWithError;
-import static io.github.yoda31217.DoubleWithError.newDoubleWithRelativeError;
+import static io.github.yoda31217.samodelkin.math.error.DoubleWithError.newDoubleWithError;
+import static io.github.yoda31217.samodelkin.math.error.DoubleWithError.newDoubleWithRelativeError;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
