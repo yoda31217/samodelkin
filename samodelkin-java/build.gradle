@@ -107,5 +107,5 @@ tasks.named('test') {
 }
 
 tasks.publish.doLast {
-    println "Published as ${group}:${artifactId}:${version} to https://s01.oss.sonatype.org"
+    println "Published as ${project.group}:${artifactId}:${project.version} to https://s01.oss.sonatype.org"
 }
