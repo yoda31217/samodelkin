@@ -49,4 +49,20 @@ public class DoubleWithError {
       valueFormatter.apply(error),
       100 * getRelativeError());
   }
+
+  public DoubleWithError add(DoubleWithError other) {
+    return newDoubleWithError(value + other.value, error + other.error);
+  }
+
+  public DoubleWithError sub(DoubleWithError other) {
+    return newDoubleWithError(value - other.value, error + other.error);
+  }
+
+  public DoubleWithError mul(DoubleWithError other) {
+    return newDoubleWithRelativeError(value * other.value, getRelativeError() + other.getRelativeError());
+  }
+
+  public DoubleWithError div(DoubleWithError other) {
+    return newDoubleWithRelativeError(value / other.value, getRelativeError() + other.getRelativeError());
+  }
 }

@@ -84,4 +84,36 @@ class DoubleWithErrorTest {
     DoubleWithError doubleWithError = newDoubleWithError(0, 1);
     assertThat(doubleWithError.getRelativeError()).isInfinite();
   }
+
+  @Test
+  void add_onOther_returnCorrectResult() {
+    DoubleWithError doubleWithError = newDoubleWithError(1, 0.1).add(newDoubleWithError(2, 0.2));
+
+    assertThat(doubleWithError.getValue()).isCloseTo(3, offset(0.0000001));
+    assertThat(doubleWithError.getError()).isCloseTo(0.3, offset(0.0000001));
+  }
+
+  @Test
+  void sub_onOther_returnCorrectResult() {
+    DoubleWithError doubleWithError = newDoubleWithError(1, 0.1).sub(newDoubleWithError(2, 0.2));
+
+    assertThat(doubleWithError.getValue()).isCloseTo(-1, offset(0.0000001));
+    assertThat(doubleWithError.getError()).isCloseTo(0.3, offset(0.0000001));
+  }
+
+  @Test
+  void mul_onOther_returnCorrectResult() {
+    DoubleWithError doubleWithError = newDoubleWithRelativeError(1, 0.1).mul(newDoubleWithRelativeError(2, 0.2));
+
+    assertThat(doubleWithError.getValue()).isCloseTo(2, offset(0.0000001));
+    assertThat(doubleWithError.getRelativeError()).isCloseTo(0.3, offset(0.0000001));
+  }
+
+  @Test
+  void div_onOther_returnCorrectResult() {
+    DoubleWithError doubleWithError = newDoubleWithRelativeError(1, 0.1).div(newDoubleWithRelativeError(2, 0.2));
+
+    assertThat(doubleWithError.getValue()).isCloseTo(0.5, offset(0.0000001));
+    assertThat(doubleWithError.getRelativeError()).isCloseTo(0.3, offset(0.0000001));
+  }
 }
