@@ -76,8 +76,10 @@ signing {
 
 dependencies {
     compileOnly 'org.apache.commons:commons-math3:3.6.1'
+    compileOnly 'com.google.guava:guava:31.1-jre'
 
     testImplementation 'org.apache.commons:commons-math3:3.6.1'
+    testImplementation 'com.google.guava:guava:31.1-jre'
 
     testImplementation 'org.assertj:assertj-core:3.23.1'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'

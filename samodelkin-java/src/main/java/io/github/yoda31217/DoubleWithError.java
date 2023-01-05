@@ -3,6 +3,9 @@
  */
 package io.github.yoda31217;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.Math.abs;
+
 public class DoubleWithError {
 
   private final double value;
@@ -11,11 +14,16 @@ public class DoubleWithError {
 
   private DoubleWithError(double value, double error) {
     this.value = value;
+    checkArgument(error >= 0, "Error should be >=0, but was: %s.", error);
     this.error = error;
   }
 
   public static DoubleWithError newDoubleWithError(double value, double error) {
     return new DoubleWithError(value, error);
+  }
+
+  public static DoubleWithError newDoubleWithRelativeError(double value, double relativeError) {
+    return new DoubleWithError(value, abs(value) * relativeError);
   }
 
   public double getValue() {
@@ -24,5 +32,9 @@ public class DoubleWithError {
 
   public double getError() {
     return error;
+  }
+
+  public double getRelativeError() {
+    return error / abs(value);
   }
 }
