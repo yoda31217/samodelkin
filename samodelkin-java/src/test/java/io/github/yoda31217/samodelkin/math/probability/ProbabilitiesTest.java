@@ -17,4 +17,12 @@ class ProbabilitiesTest {
     assertThat(probability.getValue()).isCloseTo(0.1, offset(0.0000001));
     assertThat(probability.getError()).isCloseTo(0.058798919, offset(0.0000001));
   }
+
+  @Test
+  void calculateProbabilityWithError_on0SuccessesCount_return0ProbabilityWith0Error() {
+    DoubleWithError probability = calculateProbabilityWithError(100, 0, 0.95);
+
+    assertThat(probability.getValue()).isCloseTo(0.0, offset(0.0000001));
+    assertThat(probability.getError()).isCloseTo(0.0, offset(0.0000001));
+  }
 }

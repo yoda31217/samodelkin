@@ -17,6 +17,10 @@ public class Probabilities {
   }
 
   private static double calculateError(int trialsCount, int successesCount, double confidenceLevel) {
+    if (successesCount == 0) {
+      return 0.0;
+    }
+
     ConfidenceInterval confidenceInterval =
       getNormalApproximationInterval(trialsCount, successesCount, confidenceLevel);
     return (confidenceInterval.getUpperBound() - confidenceInterval.getLowerBound()) / 2;
