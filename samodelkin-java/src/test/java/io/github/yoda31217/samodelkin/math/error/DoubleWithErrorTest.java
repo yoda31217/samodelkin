@@ -63,8 +63,8 @@ class DoubleWithErrorTest {
   @Test
   void format_withValueFormatter_returnCorrectStr() {
     DoubleWithError doubleWithError = newDoubleWithError(0.25, 0.05);
-    assertThat(doubleWithError.format(value -> format(ENGLISH, "%.2f", value)))
-      .isEqualTo("0.25±0.05(20.00%)");
+    assertThat(doubleWithError.format(value -> format(ENGLISH, "%.1f", value)))
+      .isEqualTo("0.3±0.1(20.00%)");
   }
 
   @Test
