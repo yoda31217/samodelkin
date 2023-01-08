@@ -4,6 +4,7 @@
 package io.github.yoda31217.samodelkin.math.error;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.Double.POSITIVE_INFINITY;
 import static java.lang.Math.abs;
 import static java.util.Locale.ENGLISH;
 
@@ -38,9 +39,7 @@ public class DoubleWithError {
   }
 
   public double getRelativeError() {
-    return error == 0
-      ? 0
-      : error / abs(value);
+    return value == 0 ? POSITIVE_INFINITY : error / abs(value);
   }
 
   public String format(Function<Double, String> valueFormatter) {

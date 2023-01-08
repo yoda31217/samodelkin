@@ -76,7 +76,7 @@ class DoubleWithErrorTest {
   @Test
   void newDoubleWithError_on0ValueAndError_return0RelativeError() {
     DoubleWithError doubleWithError = newDoubleWithError(0, 0);
-    assertThat(doubleWithError.getRelativeError()).isCloseTo(0, offset(0.0000001));
+    assertThat(doubleWithError.getRelativeError()).isInfinite();
   }
 
   @Test
