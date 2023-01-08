@@ -2,22 +2,66 @@ package io.github.yoda31217.samodelkin.math.error;
 
 import static io.github.yoda31217.samodelkin.math.error.DoubleWithError.newDoubleWithError;
 import static io.github.yoda31217.samodelkin.math.error.DoubleWithError.newDoubleWithRelativeError;
+import static java.lang.Double.NEGATIVE_INFINITY;
+import static java.lang.Double.POSITIVE_INFINITY;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.data.Offset.offset;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class DoubleWithErrorTest {
 
-  @Test
-  void newDoubleWithError_onPositiveValueAndError_correctFieldsReturned() {
-    DoubleWithError doubleWithError = newDoubleWithError(12.34, 0.56);
+  @ParameterizedTest
+  @MethodSource("newDoubleWithError_onCorrectValues_returnCorrectValueAndErrors_provider")
+  void newDoubleWithError_onCorrectValues_returnCorrectValueAndErrors(
+    double value, double error, double relativeError
+  ) {
+    DoubleWithError doubleWithError = newDoubleWithError(value, error);
 
-    assertThat(doubleWithError.getValue()).isCloseTo(12.34, offset(0.0000001));
-    assertThat(doubleWithError.getError()).isCloseTo(0.56, offset(0.0000001));
+    assertThat(doubleWithError.getValue()).isCloseTo(value, offset(0.000001));
+    assertThat(doubleWithError.getError()).isCloseTo(error, offset(0.0000001));
+    assertThat(doubleWithError.getRelativeError()).isCloseTo(relativeError, offset(0.0000001));
+  }
+
+  static Stream<Arguments> newDoubleWithError_onCorrectValues_returnCorrectValueAndErrors_provider() {
+    return Stream.of(
+      arguments(10.0, 1.0, 0.1),
+      arguments(-10.0, 1.0, 0.1),
+      arguments(1, 0, 0),
+      arguments(0, 0, POSITIVE_INFINITY),
+      arguments(0, 1, POSITIVE_INFINITY),
+      arguments(1, POSITIVE_INFINITY, POSITIVE_INFINITY),
+      arguments(POSITIVE_INFINITY, POSITIVE_INFINITY, POSITIVE_INFINITY),
+      arguments(POSITIVE_INFINITY, 1, 0),
+      arguments(NEGATIVE_INFINITY, 1, 0)
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("newDoubleWithRelativeError_onCorrectValues_returnCorrectValueAndErrors_provider")
+  void newDoubleWithRelativeError_onCorrectValues_returnCorrectValueAndErrors(
+    double value, double error, double relativeError
+  ) {
+    DoubleWithError doubleWithError = newDoubleWithRelativeError(value, relativeError);
+
+    assertThat(doubleWithError.getValue()).isCloseTo(value, offset(0.000001));
+    assertThat(doubleWithError.getError()).isCloseTo(error, offset(0.0000001));
+    assertThat(doubleWithError.getRelativeError()).isCloseTo(relativeError, offset(0.0000001));
+  }
+
+  static Stream<Arguments> newDoubleWithRelativeError_onCorrectValues_returnCorrectValueAndErrors_provider() {
+    return Stream.of(
+      arguments(10.0, 1.0, 0.1),
+      arguments(-10.0, 1.0, 0.1)
+    );
   }
 
   @Test
@@ -28,29 +72,10 @@ class DoubleWithErrorTest {
   }
 
   @Test
-  void newDoubleWithError_onPositiveValueAndError_correctRelativeErrorReturned() {
-    DoubleWithError doubleWithError = newDoubleWithError(10.0, 1);
-    assertThat(doubleWithError.getRelativeError()).isCloseTo(0.1, offset(0.0000001));
-  }
-
-  @Test
-  void newDoubleWithError_onNegativeValue_correctPositiveRelativeErrorReturned() {
-    DoubleWithError doubleWithError = newDoubleWithError(-10.0, 1);
-    assertThat(doubleWithError.getRelativeError()).isCloseTo(0.1, offset(0.0000001));
-  }
-
-  @Test
-  void newDoubleWithRelativeError_onPositiveValueAndRelativeError_correctFieldsReturned() {
-    DoubleWithError doubleWithError = newDoubleWithRelativeError(12.34, 0.1);
-
-    assertThat(doubleWithError.getValue()).isCloseTo(12.34, offset(0.0000001));
-    assertThat(doubleWithError.getError()).isCloseTo(1.234, offset(0.0000001));
-  }
-
-  @Test
-  void newDoubleWithRelativeError_onNegativeValue_correctErrorReturned() {
-    DoubleWithError doubleWithError = newDoubleWithRelativeError(-12.34, 0.1);
-    assertThat(doubleWithError.getError()).isCloseTo(1.234, offset(0.0000001));
+  void newDoubleWithError_onNegativeInfinityError_throwEx() {
+    assertThatThrownBy(() -> newDoubleWithError(12.34, NEGATIVE_INFINITY))
+      .isInstanceOf(IllegalArgumentException.class)
+      .hasMessageContaining("-Infinity");
   }
 
   @Test
@@ -65,24 +90,6 @@ class DoubleWithErrorTest {
     DoubleWithError doubleWithError = newDoubleWithError(0.25, 0.05);
     assertThat(doubleWithError.format(value -> format(ENGLISH, "%.1f", value)))
       .isEqualTo("0.3±0.1(20.00%)");
-  }
-
-  @Test
-  void newDoubleWithError_on0Error_return0RelativeError() {
-    DoubleWithError doubleWithError = newDoubleWithError(1, 0);
-    assertThat(doubleWithError.getRelativeError()).isCloseTo(0, offset(0.0000001));
-  }
-
-  @Test
-  void newDoubleWithError_on0ValueAndError_return0RelativeError() {
-    DoubleWithError doubleWithError = newDoubleWithError(0, 0);
-    assertThat(doubleWithError.getRelativeError()).isInfinite();
-  }
-
-  @Test
-  void newDoubleWithError_on0ValueAnd1Error_returnInfiniteRelativeError() {
-    DoubleWithError doubleWithError = newDoubleWithError(0, 1);
-    assertThat(doubleWithError.getRelativeError()).isInfinite();
   }
 
   @Test

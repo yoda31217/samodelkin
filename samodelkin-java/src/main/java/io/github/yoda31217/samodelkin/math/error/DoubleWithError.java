@@ -39,7 +39,9 @@ public class DoubleWithError {
   }
 
   public double getRelativeError() {
-    return value == 0 ? POSITIVE_INFINITY : error / abs(value);
+    return value == 0 || error == POSITIVE_INFINITY
+      ? POSITIVE_INFINITY
+      : error / abs(value);
   }
 
   public String format(Function<Double, String> valueFormatter) {
