@@ -4,7 +4,8 @@
 package io.github.yoda31217.samodelkin.math.error;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.Double.POSITIVE_INFINITY;
+import static java.lang.Double.isFinite;
+import static java.lang.Double.isNaN;
 import static java.lang.Math.abs;
 import static java.util.Locale.ENGLISH;
 
@@ -17,8 +18,12 @@ public class DoubleWithError {
   private final double error;
 
   private DoubleWithError(double value, double error) {
+    checkArgument(isFinite(value) && !isNaN(value) && value != 0.0,
+      "Value should be finite number !=0, but was: %s.", value);
     this.value = value;
-    checkArgument(error >= 0, "Error should be >=0, but was: %s.", error);
+
+    checkArgument(isFinite(error) && !isNaN(error) && error >= 0,
+      "Error should be finite number >=0, but was: %s.", error);
     this.error = error;
   }
 
@@ -39,9 +44,7 @@ public class DoubleWithError {
   }
 
   public double getRelativeError() {
-    return value == 0 || error == POSITIVE_INFINITY
-      ? POSITIVE_INFINITY
-      : error / abs(value);
+    return error / abs(value);
   }
 
   public String format(Function<Double, String> valueFormatter) {

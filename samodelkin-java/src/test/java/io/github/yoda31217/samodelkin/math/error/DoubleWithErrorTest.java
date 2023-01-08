@@ -3,6 +3,7 @@ package io.github.yoda31217.samodelkin.math.error;
 import static io.github.yoda31217.samodelkin.math.error.DoubleWithError.newDoubleWithError;
 import static io.github.yoda31217.samodelkin.math.error.DoubleWithError.newDoubleWithRelativeError;
 import static java.lang.Double.NEGATIVE_INFINITY;
+import static java.lang.Double.NaN;
 import static java.lang.Double.POSITIVE_INFINITY;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
@@ -20,8 +21,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 class DoubleWithErrorTest {
 
   @ParameterizedTest
-  @MethodSource("newDoubleWithError_onCorrectValues_returnCorrectValueAndErrors_provider")
-  void newDoubleWithError_onCorrectValues_returnCorrectValueAndErrors(
+  @MethodSource("newDoubleWithError_onCorrectArguments_returnCorrectValueAndErrors_provider")
+  void newDoubleWithError_onCorrectArguments_returnCorrectValueAndErrors(
     double value, double error, double relativeError
   ) {
     DoubleWithError doubleWithError = newDoubleWithError(value, error);
@@ -31,23 +32,17 @@ class DoubleWithErrorTest {
     assertThat(doubleWithError.getRelativeError()).isCloseTo(relativeError, offset(0.0000001));
   }
 
-  static Stream<Arguments> newDoubleWithError_onCorrectValues_returnCorrectValueAndErrors_provider() {
+  static Stream<Arguments> newDoubleWithError_onCorrectArguments_returnCorrectValueAndErrors_provider() {
     return Stream.of(
       arguments(10.0, 1.0, 0.1),
       arguments(-10.0, 1.0, 0.1),
-      arguments(1, 0, 0),
-      arguments(0, 0, POSITIVE_INFINITY),
-      arguments(0, 1, POSITIVE_INFINITY),
-      arguments(1, POSITIVE_INFINITY, POSITIVE_INFINITY),
-      arguments(POSITIVE_INFINITY, POSITIVE_INFINITY, POSITIVE_INFINITY),
-      arguments(POSITIVE_INFINITY, 1, 0),
-      arguments(NEGATIVE_INFINITY, 1, 0)
+      arguments(1, 0, 0)
     );
   }
 
   @ParameterizedTest
-  @MethodSource("newDoubleWithRelativeError_onCorrectValues_returnCorrectValueAndErrors_provider")
-  void newDoubleWithRelativeError_onCorrectValues_returnCorrectValueAndErrors(
+  @MethodSource("newDoubleWithRelativeError_onCorrectArguments_returnCorrectValueAndErrors_provider")
+  void newDoubleWithRelativeError_onCorrectArguments_returnCorrectValueAndErrors(
     double value, double error, double relativeError
   ) {
     DoubleWithError doubleWithError = newDoubleWithRelativeError(value, relativeError);
@@ -57,32 +52,54 @@ class DoubleWithErrorTest {
     assertThat(doubleWithError.getRelativeError()).isCloseTo(relativeError, offset(0.0000001));
   }
 
-  static Stream<Arguments> newDoubleWithRelativeError_onCorrectValues_returnCorrectValueAndErrors_provider() {
+  static Stream<Arguments> newDoubleWithRelativeError_onCorrectArguments_returnCorrectValueAndErrors_provider() {
     return Stream.of(
       arguments(10.0, 1.0, 0.1),
-      arguments(-10.0, 1.0, 0.1)
+      arguments(-10.0, 1.0, 0.1),
+      arguments(1, 0, 0)
     );
   }
 
-  @Test
-  void newDoubleWithError_onNegativeError_throwEx() {
-    assertThatThrownBy(() -> newDoubleWithError(12.34, -0.56))
+  @ParameterizedTest
+  @MethodSource("newDoubleWithError_onIncorrectArgument_throwEx_provider")
+  void newDoubleWithError_onIncorrectArgument_throwEx(double value, double error, String badNumberStr) {
+    assertThatThrownBy(() -> newDoubleWithError(value, error))
       .isInstanceOf(IllegalArgumentException.class)
-      .hasMessageContaining("-0.56");
+      .hasMessageContaining(badNumberStr);
   }
 
-  @Test
-  void newDoubleWithError_onNegativeInfinityError_throwEx() {
-    assertThatThrownBy(() -> newDoubleWithError(12.34, NEGATIVE_INFINITY))
-      .isInstanceOf(IllegalArgumentException.class)
-      .hasMessageContaining("-Infinity");
+  static Stream<Arguments> newDoubleWithError_onIncorrectArgument_throwEx_provider() {
+    return Stream.of(
+      arguments(10.0, -1.0, "-1.0"),
+      arguments(10.0, NEGATIVE_INFINITY, "-Infinity"),
+      arguments(10.0, POSITIVE_INFINITY, "Infinity"),
+      arguments(10.0, NaN, "NaN"),
+      arguments(0.0, 1.0, "0.0"),
+      arguments(NEGATIVE_INFINITY, 1.0, "-Infinity"),
+      arguments(POSITIVE_INFINITY, 1.0, "Infinity"),
+      arguments(NaN, 1.0, "NaN")
+    );
   }
 
-  @Test
-  void newDoubleWithRelativeError_onNegativeRelativeError_throwEx() {
-    assertThatThrownBy(() -> newDoubleWithRelativeError(12.34, -0.1))
+  @ParameterizedTest
+  @MethodSource("newDoubleWithRelativeError_onIncorrectArgument_throwEx_provider")
+  void newDoubleWithRelativeError_onIncorrectArgument_throwEx(double value, double relativeError, String badNumberStr) {
+    assertThatThrownBy(() -> newDoubleWithRelativeError(value, relativeError))
       .isInstanceOf(IllegalArgumentException.class)
-      .hasMessageContaining("-1.234");
+      .hasMessageContaining(badNumberStr);
+  }
+
+  static Stream<Arguments> newDoubleWithRelativeError_onIncorrectArgument_throwEx_provider() {
+    return Stream.of(
+      arguments(10.0, -0.1, "-1.0"),
+      arguments(10.0, NEGATIVE_INFINITY, "-Infinity"),
+      arguments(10.0, POSITIVE_INFINITY, "Infinity"),
+      arguments(10.0, NaN, "NaN"),
+      arguments(0.0, 0.1, "0.0"),
+      arguments(NEGATIVE_INFINITY, 0.1, "-Infinity"),
+      arguments(POSITIVE_INFINITY, 0.1, "Infinity"),
+      arguments(NaN, 0.1, "NaN")
+    );
   }
 
   @Test
